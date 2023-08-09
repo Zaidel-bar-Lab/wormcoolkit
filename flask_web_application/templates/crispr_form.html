@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+      <style>
+          .card {
+              margin:10px
+          }
+          .loader {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+           }
+           @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+           }
+      </style>
+      <script type="text/javascript">
+        function toggle_visibility(id1,id2) {
+            let e1 = document.getElementById(id1);
+            let e2 = document.getElementById(id2);
+            if(e1.style.display === 'block'){
+                e1.style.display = 'none';
+                e2.style.display = 'block';
+            }
+            else{
+                e1.style.display = 'block';
+                e2.style.display = 'none';
+            }
+          }
+</script>
+    <title>Point Mutation CRISPR Planner</title>
+  </head>
+<body>
+    {% extends "template.html" %}
+    {% block content %}
+    <div class="loader" id="myloader" style="display: none;"></div>
+    <div id="mycontainer" style="display: block;">
+
+    <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Get a complete CRISPR plan for your point mutation request</h2>
+
+    <p class="card-text"> The Automated CRISPR Planner aims to streamline your CRISPR design process given only the gene name and the
+        amino acid mutation you wish to insert.</p>
+    <p class="card-text">The tool is designed for point mutations (one amino acid changed to another) in the
+        <i>Caenorhabditis elegans</i> genome.
+    <br>The tool has been built to generate CRISPR designs according to the methods described
+        in Geraldine Seydoux's paper:</p>
+        <p class="card-text">Paix A, Folkmann A, Goldman DH, et al. Precision genome editing using synthesis-dependent repair
+            of Cas9-induced DNA breaks. <i>Proc Natl Acad Sci U S A.</i> 2017;114(50):E10745-E10754.
+            doi:10.1073/pnas.1711979114</p>
+      </div>
+    </div>
+
+      <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Point Mutation CRISPR Planner</h2>
+
+    <p class="card-text"> In order to use the service, please insert your worm gene name, nucleotide strand sequence (unspliced + UTR;
+        optional), amino acid site you wish to mutate, the amino acid you wish to alter from and the amino acid you
+        wish to alter to.</p>
+         <p class="card-text">If you don't have a valid crRNA  sequence with which you wish to plan your CRISPR, please leave that box empty.
+        <br>Once clicking the "Submit" button, you will be presented with all possible crRNA sequences relevant to
+        your request.<br>
+        Choose one of the RNA guides presented to you and then you will get the complete CRISPR design plan.</p>
+    <div class="gap-10"></div>
+    <form style="margin: 0" action="/crispr" method="POST">
+         <input type="hidden" name="crrna_done" value="false">
+
+         <div class="form-group">
+            <label for="name">Your worm gene name:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter worm gene name...">
+{#            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
+          </div>
+
+         <div class="form-group">
+            <label for="site">The amino acid site:</label>
+            <input type="text" class="form-control" id="site" name="site" placeholder="">
+{#            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
+          </div>
+
+        <div class="form-group">
+            <label for="given_isoform">The isoform full name (optional):</label>
+            <input type="text" class="form-control" id="given_isoform" name="given_isoform" placeholder="">
+           <small id="emailHelp" class="form-text text-muted"><b>For example:</b> PDR-1 gene has 3 different isoforms: K08E3.7a.1 , K08E3.7b.1 , K08E3.7b.2 , K08E3.7c.1.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="seq">The nucleotide strand (unspliced + UTR; optional):</label>
+            <input type="text" class="form-control" id="seq"  name="seq" placeholder="">
+{#            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
+          </div>
+
+        <br> From: <select class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="from_aa">
+                    <option value="ALANINE">Alanine</option>
+                    <option value="ARGININE">Arginine</option>
+                    <option value="ASPARAGINE">Asparagine</option>
+                    <option value="ASPARTIC_ACID">Aspartic Acid</option>
+                    <option value="CYSTEINE">Cysteine</option>
+                    <option value="GLUTAMINE">Glutamine</option>
+                    <option value="GLUTAMIC_ACID">Glutamic Acid</option>
+                    <option value="GLYCINE">Glycine</option>
+                    <option value="HISTIDINE">Histidine</option>
+                    <option value="ISOLEUCINE">Isoleucine</option>
+                    <option value="LEUCINE">Leucine</option>
+                    <option value="LYSINE">Lysine</option>
+                    <option value="METHIONINE">Methionine</option>
+                    <option value="PHENYLALANINE">Phenylalanine</option>
+                    <option value="PROLINE">Proline</option>
+                    <option value="SERINE">Serine</option>
+                    <option value="THREONINE">Threonine</option>
+                    <option value="TRYPTOPHAN">tryptophan</option>
+                    <option value="TYROSINE">Tyrosine</option>
+                    <option value="VALINE">Valine</option>
+                </select>
+        To: <select  class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="to_aa">
+                <option value="ALANINE">Alanine</option>
+                <option value="ARGININE">Arginine</option>
+                <option value="ASPARAGINE">Asparagine</option>
+                <option value="ASPARTIC_ACID">Aspartic Acid</option>
+                <option value="CYSTEINE">Cysteine</option>
+                <option value="GLUTAMINE">Glutamine</option>
+                <option value="GLUTAMIC_ACID">Glutamic Acid</option>
+                <option value="GLYCINE">Glycine</option>
+                <option value="HISTIDINE">Histidine</option>
+                <option value="ISOLEUCINE">Isoleucine</option>
+                <option value="LEUCINE">Leucine</option>
+                <option value="LYSINE">Lysine</option>
+                <option value="METHIONINE">Methionine</option>
+                <option value="PHENYLALANINE">Phenylalanine</option>
+                <option value="PROLINE">Proline</option>
+                <option value="SERINE">Serine</option>
+                <option value="THREONINE">Threonine</option>
+                <option value="TRYPTOPHAN">tryptophan</option>
+                <option value="TYROSINE">Tyrosine</option>
+                <option value="VALINE">Valine</option>
+            </select>
+        <br/>
+        <br/>
+
+        <div class="form-group">
+            <label for="enzymes">Preferred restriction enzymes (no need to add the notation "-HF" for high fidelity):</label>
+            <input type="text" class="form-control" id="enzymes" name="enzymes" placeholder="">
+            <small id="enzymesHelp" class="form-text text-muted">For example: EcoRI, PvuII, BspHI, etc'.</small>
+        </div>
+
+        <div class="alert alert-warning" role="alert">
+          By not providing any relevant restriction enzymes, the tool will search for  <a href="https://international.neb.com/tools-and-resources/selection-charts/alphabetized-list-of-recognition-specificities" target="_blank">all known enzymes</a>.
+        </div>
+
+
+        <div class="form-group">
+            <label for="max_num_input">Maximum number of results (per crRNA):</label>
+            <input id="max_num_input" class="form-control"type="text" name="max_results" list="max_num" style=width:20%; value=1>
+              <datalist id="max_num">
+                </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="crrna">chosen crRNA (if you have already):</label>
+            <input type="text" class="form-control" id="crrna" name="crrna" placeholder="">
+        </div>
+
+        Choose strand: <select class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="crrna_strand">
+                <option value=1>Sense</option>
+                <option value=-1>Anti-sense</option>
+        </select>
+        <br/>
+        <br/>
+        <input class="btn btn-primary" type="submit" value="Submit" onclick="toggle_visibility('myloader','mycontainer');">
+    </form>
+    <div class="gap-30"></div>
+    <div class="alert alert-warning" role="alert">
+         The process can take up to several minutes, please be patient
+    </div>
+    </div>
+      </div>
+
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+</body>
+</html>

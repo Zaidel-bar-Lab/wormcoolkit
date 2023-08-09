@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-left: 40px;
+        }
+        th, td {
+            padding: 5px;
+        }
+        th {
+            text-align: left;
+        }
+      </style>
+    <meta charset="utf-8">
+    <title>Your Results Are Here!</title>
+  </head>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+    <h1> Your Results Are Here! </h1>
+    <table>
+        <thead><tr><th> Human Gene </th><th> Variant </th><th> Caenorhabditis elegans Ortholog </th><th> Conservation Status </th>
+            <th> Position in C.elegans Sequence </th><th> Window Conservation Score(%) </th><th> # Conservation Supporting
+                Alignments </th><th> MMP Mention </th></tr></thead>
+        {%for result in true_results%}
+        <tr>
+            <td> {{result[0]}} </td>
+            <td> {{result[1]}} </td>
+            <td> {{result[2]}} </td>
+            <td> {{result[3]}} </td>
+            <td> {{result[4]}} </td>
+            <td> {{result[5]}} </td>
+            <td> {{result[6]}} </td>
+            <td> {{result[7]}} </td>
+
+        </tr>
+        {%endfor%}
+    </table>
+
+    <div class="gap-30"></div>
+    <h1> Genes we could not find variants data for: </h1>
+    <table>
+        <thead><tr><th> Your Gene </th><th> Reason for failing </th></tr></thead>
+        {%for result in false_results%}
+        <tr>
+            <td> {{result[0]}} </td>
+            <td> {{result[1]}} </td>
+        </tr>
+        {%endfor%}
+    </table>
+
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+  </body>
+</html>

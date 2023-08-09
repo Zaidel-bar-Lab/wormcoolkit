@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      <style>
+        table, th, td {
+            {#border: 1px solid black;#}
+            border-collapse: collapse;
+            {#margin-left: 40px;#}
+        }
+        .card {
+            margin: 10px;
+        }
+        th, td {
+            padding: 5px;
+        }
+        th {
+            text-align: left;
+        }
+      </style>
+    <meta charset="utf-8">
+    <title>Your Results Are Here!</title>
+  </head>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+      <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Your Results Are Here! </h2>
+            <table class="table table-striped">
+                <thead><tr><th> Your Gene </th><th> Ortholog </th><th> # Sources (out of 6) </th>
+                    <th> Conserved Domains Ratio(C.elegans\Human) </th><th> Human Gene Length </th>
+                    <th>C.elegans Gene Length </th><th> Ortholog Description </th></tr></thead>
+                {%for result in true_results%}
+                <tr>
+                    <td> {{result[0]}} </td>
+                    <td> {{result[1]}} </td>
+                    <td> {{result[2]}} </td>
+                    <td> {{result[3]}} </td>
+                    <td> {{result[4]}} </td>
+                    <td> {{result[5]}} </td>
+                    <td> {{result[6]}} </td>
+                </tr>
+                {%endfor%}
+            </table>
+      </div>
+    </div>
+    <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title"> Genes we could not find orthologs for: </h2>
+        <table class="table table-striped">
+            <thead><tr><th> Your Gene </th><th> Reason for failing </th></tr></thead>
+            {%for result in false_results%}
+            <tr>
+                <td> {{result[0]}} </td>
+                <td> {{result[1]}} </td>
+            </tr>
+            {%endfor%}
+        </table>
+      </div>
+    </div>
+
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+  </body>
+</html>

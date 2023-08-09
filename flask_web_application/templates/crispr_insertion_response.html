@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-left: 40px;
+        }
+        .card {
+            margin: 10px;
+        }
+        th, td {
+            padding: 5px;
+        }
+        th {
+            text-align: left;
+        }
+        .highlight {color: yellow;}
+
+      </style>
+
+    <meta charset="utf-8">
+    <title>Your Results Are Here!</title>
+  </head>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+    <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Your CRISPR Results Are Here! </h2>
+
+        <br>
+        <p><u>Gene name:</u> {{result.query_data[0]}}</p>
+        <p><b>For crRNA:</b> {{result.crRNA[0]}} in index: {{result.crRNA[1].start}}-{{result.crRNA[1].end}}
+          from strand: {{result.crRNA_strand}}</p>
+
+        <p>Gene's transcript was extracted from: <a href="{{ result.request_url }}" target="_blank">Gene's WormBase transcript</a> </p>
+
+        {% if result.without_primers%}
+        <p> </p>
+        {% else %}
+        <p><b>Forward primer with overhang:</b> (includes forward linker, primer and gap filler - the nucleotides that between the insertion site and the cut site):</p>
+          <p>{{result.forward_seq}}</p>
+        <p><b>The insertion sequences :</b> {{result.insertion}}</p>
+        <p><b>Reverse primer with overhang:</b> (includes reverse linker, primer and gap filler - the nucleotides that between the insertion site and the cut site):</p>
+          <p>{{result.reverse_seq}}</p>
+          {% endif %}
+        {% if result.side %}
+        <p><b>All sequence on the sense strand including the homology arms, primers, linkers and the insertion sequence: </b></p>
+           <p> <span style="color:#FF0000">{{result.HA1_forward}}</span><span style="color:#00ff00">{{result.linker_forward}}</span><span style="color:#0040ff">{{result.insertion}}</span><span style="color:#00ff00">{{result.linker_reverse_forward}}</span><span style="color:#ff00ff">{{result.complete}}</span><span style="color:#FF0000">{{result.HA2_forward}}</span>
+           </p>
+        {% else %}
+        <p><b>The entire sequence on the sense strand including the homology arms, primers, linkers and the insertion sequence: </b></p>
+           <p> <span style="color:#FF0000">{{result.HA1_forward}}</span><span style="color:#ff00ff">{{result.complete}}</span><span style="color:#00ff00">{{result.linker_forward}}</span><span style="color:#0040ff">{{result.insertion}}</span><span style="color:#00ff00">{{result.linker_reverse_forward}}</span><span style="color:#FF0000">{{result.HA2_forward}}</span>
+           </p>
+        {% endif %}
+
+
+        <style>
+.legend {
+  list-style: none;
+}
+
+.legend li {
+  float: left;
+  margin-right: 10px;
+}
+
+.legend span {
+  border: 1px solid #ccc;
+  float: left;
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+}
+
+/* your colors */
+.legend .Homolog_Arm {
+  background-color: #FF0000;
+}
+
+
+.legend .Linker {
+  background-color: #00ff00;
+}
+
+.legend .insertion_seq {
+  background-color: #0040ff;
+}
+
+.legend .filler_gap {
+  background-color: #ff00ff;
+}
+</style>
+
+        <ul class="legend">
+    <li><span class="Homolog_Arm"></span> Homology Arm</li>
+    <li><span class="Linker"></span> Linker</li>
+    <li><span class="insertion_seq"></span> Insertion Sequence</li>
+    <li><span class="filler_gap"></span> Gap Filler = the nucleotides between the insertion site and the cut site</li>
+</ul>
+
+        <br>
+      </div>
+    </div>
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+  </body>
+</html>

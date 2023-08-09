@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      <style>
+        .card {
+            margin: 10px;
+        }
+        table, th, td {
+        }
+        th, td {
+            padding: 5px;
+        }
+        th {
+            text-align: left;
+        }
+        .highlight {color: yellow;}
+
+      </style>
+    <meta charset="utf-8">
+    <title>Choose Your Preferable crRNA</title>
+  </head>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+     <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Optional crRNA strands:</h2>
+        <h4><b>Gene Isoform: </b></h4>
+        <p>{{ result.isoform }}</p><br>
+        <h4><b>crRNAs in sense strand:</b></h4><br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th> crRNA </th>
+                    <th> on-target score </th>
+                    <th> off-target score </th>
+                    <th> Additional actions </th>
+                </tr>
+            </thead>
+            {%for crrna in result.sense_crrnas_results%}
+            <tr>
+                <td style="width: 150px !important;" > {{crrna[0]}} </td>
+                <td> {{crrna[1][0]}} </td>
+                <td> {{crrna[1][1]}} </td>
+                <td>
+                    <form action="/crispr_insertion" method="POST">
+                        <input type="hidden" name="crrna_done" value="true">
+                        <input type="hidden"  name="crrna_strand" value=1>
+                        <input type="hidden"  name="crrna" value="{{crrna[0]}}">
+                        <button class="btn btn-primary" type="submit">choose this crRNA</button>
+                    </form>
+                </td>
+            </tr>
+            {%endfor%}
+        </table>
+        <br>
+        <h4><b>crRNAs in anti-sense strand:</b></h4><br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th> crRNA </th>
+                    <th> on-target score </th>
+                    <th> off-target score </th>
+                    <th> Additional actions </th>
+                </tr>
+            </thead>
+            {%for crrna in result.anti_sense_crrnas_results%}
+            <tr>
+                <td style="width: 150px !important;"> {{crrna[0]}} </td>
+                <td> {{crrna[1][0]}} </td>
+                <td> {{crrna[1][1]}} </td>
+                <td>
+                    <form action="/crispr_insertion" method="POST">
+                        <input type="hidden" name="crrna_done" value="true">
+                        <input type="hidden"  name="crrna_strand" value=-1>
+                        <input type="hidden"  name="crrna" value="{{crrna[0]}}">
+                        <button class="btn btn-primary" type="submit">choose this crRNA</button>
+                    </form>
+                </td>
+            </tr>
+            {%endfor%}
+        </table>
+        <br>
+        <div class="alert alert-warning" role="alert">If you cannot see the on-target and off-target
+            scores for your optional crRNAs and you wish to check them, you
+            can copy and paste the crRNAs as formatted below to the
+            <a href="https://eu.idtdna.com/site/order/designtool/index/CRISPR_SEQUENCE" target="_blank">
+                IDT's CRISPR-Cas9 guide RNA design checker</a></div>
+        <br>
+        <ul style="list-style-type:none;">
+            <p><b>crRNAs in sense strand:</b></p>
+            {% for crrna in result.sense_crrnas %}
+            <li>
+                >Sequence{{crrna[1].start}}<br>
+                {{ crrna[0] }}
+            </li>
+            {% endfor %}
+        </ul>
+        <ul style="list-style-type:none;">
+            <p><b>crRNAs in anti-sense strand:</b></p>
+            {% for crrna in result.anti_sense_crrnas %}
+            <li>
+                >Sequence{{crrna[1].start}}<br>
+                {{ crrna[0] }}
+            </li>
+            {% endfor %}
+        </ul>
+        </div>
+     </div>
+
+    <div class="card" >
+      <div class="card-body">
+           <h2 class="card-title">A guide for choosing your guide:</h2>
+            In the fortunate event that WormCoolKit and IDT gRNA design checker provided you with more than one possible guide,
+                here are our guidelines for choosing the best one:<br>
+          <ul>
+                <li>Closer is better – the PAM site should be as close as possible to the location of your point mutation.
+            Efficiency of the CRISPR is declining the further the cut site is from the mutations you want to insert.</li>
+                <li>Consider the restriction enzyme/site – insertion of fewer mutations is usually better so if the “must have”
+            mutations (amino acid and disruption of the recognition site) are causing the appearance or disappearance of a
+            restriction site that’s preferable. Another favorable result can be if one of the designs gives you a restriction
+            site for an enzyme you already have.</li>
+                <li>IDT score – in our hands, every guide with an on-target score of 50 and above worked great. We think that
+                    this is the least important thing to consider. A high off-target score is nice but as long as its above 90
+                    (and most of them are in C. elegans) you shouldn’t have any problems a few out-crosses wouldn’t solve.</li>
+          </ul>
+          <br>
+           <div class="alert alert-warning" role="alert">Once you choose your preferable crRNA sequence, please go back and re-send your query along with and your
+               chosen crRNA and relevant strand.</div>
+          <br>
+      </div>
+    </div>
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+  </body>
+</html>

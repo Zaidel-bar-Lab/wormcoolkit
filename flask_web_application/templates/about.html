@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>About Us</title>
+  </head>
+  <style>
+      .card {
+          margin: 10px !important;
+          border-radius: 5px;
+      }
+  </style>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+    <div class="card" >
+      <div class="card-body">
+      <h5 class="card-title">About Our Project</h5>
+     <p class="card-text">The Worm Cool Kit (WCK) is a web interface that offers several online bioinformatic tools for scientists who work
+        with the nematode <i>Caenorhabditis elegans</i> (henceforth “worms”).</p>
+     <p class="card-text">The WCK is especially useful for researchers who wish to model human disease-causing mutations in worms, but it
+        will be helpful for any analysis of gene and residue conservation between worms and humans and for CRISPR design
+        of point mutations and insertions. Starting with the identification of the most likely worm ortholog of the human gene of
+        interest, the WCK can then check whether a given variation in the human gene is in a residue conserved in worms.
+        Finally, the WCK can help design the CRISPR strategy to insert the variation into the worm genome and/or insert something larger such as a fluorescent tag.</p>
+     <p class="card-text">A detailed description of each bioinformatic tool can be found on their respective pages.</p>
+     <p class="card-text"><br><u>Privacy Notification:</u> WormCoolKit does not save any of the ortholog searches or CRISPR designs performed on the website.
+        Results are only available to the person performing the search.</p>
+    <div class="gap-10"></div>
+
+      </div>
+    </div>
+    <div class="card" >
+      <div class="card-body">
+      <h5 class="card-title">The Ortholog Finder</h5>
+     <p class="card-text">The Orthologs Finder is a tool designed to deliver the <i>Caenorhabditis elegans</i> genes most likely orthologous to
+        your human query genes or the other way around (find human orthologs of worm genes). </p>
+     <p class="card-text">Our algorithm extracts candidates from the OrthoList2 database (see References) and carries several additional
+        filtration steps, aimed to increase the likelihood that candidates are true orthologs.</p>
+     <p class="card-text">The default thresholds for filtration were determined after examining a large number of established ortholog
+        pairs through the pipeline. Some thresholds can be changed by the user.</p>
+     <p class="card-text">Our analysis includes the following steps: </p>
+    <ol>
+    <li> <p class="card-text">Filtration based on number of sources in OrthoList2: OrthList2 specifies the number of tools (out of six)
+        that predicted a pair of genes to be orthologous. Our analysis filters out (as a default) candidates with only 1
+        or 2 sources.</p></li>
+    <li> <p class="card-text">Filtration based on gene's length: each gene's coding sequence length is extracted from Ensembl, and if the
+        ratio between the worm gene to the human gene is lower than 0.5 or higher than 2, the pair is ruled out.</p></li>
+    <li> <p class="card-text">Filtration based on number of conserved protein domains: each gene's number of conserved protein domains is
+        extracted from GeneBank, and if the ratio between the numbers of domains in the query to the number of domains
+        in the candidate is higher than 2 or lower than 0.5, the pair is ruled out.</p></li>
+    <li> <p class="card-text">Filtration based on reversed BLAST: In this step we BLAST the candidate ortholog in the query gene’s species,
+        and if the query gene is among the first 50 matches, the orthologous pair is valid.</p></li>
+    </ol>
+     <p class="card-text">The pipeline will return all pairs that have passed the threshold in all examinations, and mention the values in
+        each test.</p>
+      </div>
+    </div>
+
+    <div class="gap-10"></div>
+
+      <div class="card" >
+      <div class="card-body">
+      <h5 class="card-title">The Amino Acid Conservation Tool</h5>
+     <p class="card-text">The Amino Acid Conservation Tool is a tool designed to inform whether a specific amino acid in a human protein is conserved or
+        not in its <i>Caenorhabditis elegans</i> ortholog sequence.</p>
+     <p class="card-text">It uses the Ortholog Finder to find the human orthologs on which the conservation is checked. If this amino acid
+        is conserved, the tool will provide you with the corresponding site in the worm protein amino acid sequence.
+        If not, the tool will notify whether the amino acid in the worm sequence is similar or not conserved at all.</p>
+     <p class="card-text">In order to identify conservation status, the algorithm uses different methods of sequence alignments, and
+        therefore each conserved amino acid is delivered with the number of alignments (out of 2000~) supporting the
+        conservation, thus amino acids that appear conserved but have only few alignments to support the status are not
+        necessarily conserved. </p>
+     <p class="card-text">The tool also provides an alignment score for the region surrounding the relevant amino acid, in order to assess
+        whether the variation lies within a conserved region of the protein. The score shows what percentage of the 60
+        amino acids around the variable amino acid in the human sequence and the corresponding amino acid in the worm
+        sequence are equal. </p>
+    <p class="card-text">Lastly, the tool also checks if the variant was formerly registered in the Million Mutation Project.</p>
+
+      </div>
+      </div>
+    <div class="gap-10"></div>
+
+    <div class="card" >
+      <div class="card-body">
+      <h5 class="card-title">Automated CRISPR Planner</h5>
+
+    <p class="card-text"><b>Automated CRISPR Planner</b></p>
+    <p class="card-text">The Automated CRISPR Planner aims to streamline your CRISPR design process by providing only essential data such as gene name and location of mutation/insertion. </p>
+    <p class="card-text">For now, the tool works for point mutations (one amino acid changed to another) and insertions into the <i>Caenorhabditis elegans</i> genome. </p>
+    <p class="card-text">The algorithm starts with recognizing the best crRNA for the process, defines the relevant parameters such as PAM sites, Double Strand Break point and mutation zone, and goes through all possible options to mutate the strand as needed. </p>
+    <p class="card-text">In the Point Mutation CRISPR Planner, once the relevant amino acid is changed and the re-attachment section is properly mutated, the algorithm checks whether a new restriction site was inserted or removed in the process. If not, or if the restriction enzyme needed is not available for the user, the tool will try to introduce additional mutations to create or remove a different restriction site. In each step, the algorithm goes through all possible mutations and chooses the ones that have the highest chances to be successfully inserted and would be most convenient for the user’s needs. </p>
+    <p class="card-text">In the Insertion CRISPR planner, once a guide is chosen the algorithm generates a repair template and primer overhangs (when the user intends on lifting the insertion by PCR) containing homology arms, gap filler, linkers, and insertion sequence. Gap filler is the sequence of the gene that is between the actual CAS9 cut site and the required insertion location. </p>
+      </div>
+    </div>
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+
+    {% endblock %}
+  </body>
+</html>

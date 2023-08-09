@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ</title>
+</head>
+    {% extends "template.html" %}
+    {% block content %}
+    <div class="card" style="margin: 10px" >
+      <div class="card-body">
+
+        <h2 class="card-title"> FAQ </h2>
+    <ol>
+         <li class="card-text"><b>What results does the automated CRISPR planner provide?</b><br>
+            Once the crRNA is chosen by the user, the algorithm will try and introduce the relevant strand with codon
+            mutations (to alter the amino acid) and mutations to prevent reattachment in the relevant section
+            (PAM site/crRNA) that will also enable the insertion of a new restriction site.<br>
+            If a new restriction site cannot be inserted using the two types of mutations mentioned above, the algorithm
+            will try to add point mutations to insert a new restriction site.<br>
+            In case of failure, the algorithm will try to choose the codon and prevent-reattachment point mutations to
+            enable the removal of an existing restriction site, and if not successful, the algorithm will try to
+            add point mutations to remove an existing restriction site.<br>
+            If all steps have failed, the tool will provide the user with a message stating that the insertion/removal
+            of a restriction site was not possible.<br>
+            However, when results are achieved, each result will specify the codon point mutations,
+            the prevent-reattachment point mutation and the restriction site point mutation (if necessary),
+            along with the restriction site inserted/removed and the repair template (consists of two 35 nucleotide
+            homology arms on each side + section with desired edit).<br>
+            Each point mutation will be represented by the index of the nucleotide, the former nucleotide and
+            the new nucleotide. The relevant ssODN strand (sense or anti-sense) will be stated.</li><br>
+
+         <li class="card-text"><b>How does providing preferred restriction enzymes to the Automated CRISPR Planner affect the
+            algorithm?</b><br>
+            When providing the tool with preferred restriction enzymes, it aims to find CRISPR plans that use
+            one of the given enzymes. <br>
+            The algorithm will only search for restriction sites using the enzymes you provided it. <br>
+            If you wish to search results using all restriction enzymes known to the system, just
+            leave the box empty.</li><br>
+
+         <li class="card-text"><b>What does it mean if the query takes too long to return?</b><br>
+            In this case, there are probably some difficulties in finding a restriction enzyme to insert.<br>
+            If you specified the restriction enzymes you wish to work with, try extending that list or remove
+            it altogether to search all restriction enzymes known to the program. <br>
+            Also, if you specified a high number of results you wish to get, try lowering that number to check
+            whether the algorithm has come up with some results.</li><br>
+
+         <li class="card-text"><b>Where can I find a full list of the restriction enzymes the algorithm searches for?</b><br>
+            Our algorithm uses the New England Bio Labs's list of restriction enzymes:
+            <a href="https://international.neb.com/tools-and-resources/selection-charts/alphabetized-list-of-recognition-specificities">New England BioLabs.</a><br>
+            If you wish to add a restriction enzyme that is not included in this list, please contact us.</li><br>
+
+         <li class="card-text"><b>What would happen if I specified a restriction enzyme's name that is unknown to the algorithm?</b><br>
+            The algorithm would disregard it. <br>
+            Your results show which of the enzymes you entered are valid and were used
+            in the search.</li><br>
+
+         <li class="card-text"><b>In what format should I enter the restriction enzymes I wish to use?</b><br>
+            The algorithm will accept a list of names of the restriction enzymes you are interested in, without the
+            HF notation for high fidelity. <br>
+            The enzymes' names can be separated by commas, tabs, semi colons or spaces.<br>
+            To check whether your restriction enzymes' names are correctly formatted, check your results.</li><br>
+
+         <li class="card-text"><b>Could there be other CRISPR designs that the algorithm didn't find?</b><br>
+            Yes. The algorithm's purpose is not to find all possible designs for the point mutation you are
+            interested in, but to find the best options relevant for your query and return them when the requested
+            amount of possible results is achieved (default of one result).<br>
+            If you are not satisfied with the results given, you can alter the maximum results box to be given more
+            results.<br>
+            However, if you are given less results than you specified in the maximum results box, then the
+            algorithm could not find more results, thus changing the bar of maximum results won't make any
+            difference. <br>
+            If you feel something is wrong with the results, please contact us with the details of
+            your query.</li><br>
+
+         <li class="card-text"><b>Why is providing the nucleotide sequence optional? When is it necessary to provide it?</b><br>
+            The algorithm will try to extract the nucleotide sequence (unspliced + UTR) from several sources.<br>
+            However, in case the algorithm cannot find the relevant sequence (or is faulty and doesn't match the
+            protein sequence it later extracts), an error would be presented to the user, specifying that the
+            system's findings do not match the amino acid you wish to alter. <br>
+            In that case, you have the possibility to provide the correct sequence yourself.</li><br>
+
+         <li class="card-text"><b>Are the restriction sites found filtered? How are they filtered?</b><br>
+            Yes. The restriction sites found in the process of inserting/removing restriction sites are filtered
+            out if a same site is found in a distance of less than 150 nt from the found site.<br>
+            Restriction sites that pass the filtration are also sorted by the proximity to the Double Strand Break
+            (DSB) point, by distance from other same sites in the range of 500 nt around the found site and by the
+            frequency of that site in the range of 500 nt around the found site.</li><br>
+
+         <li class="card-text"><b>If the codon we wish to mutate has point mutations before and after the DSB, which arm would be
+            the one we mutate?</b><br>
+            If the number of point mutations on one side of the DSB is higher than the number of point mutations on
+            another, then the side with the higher number of mutations will be chosen as the section to be mutated.<br>
+            If not, the algorithm first defines the sequence with the PAM site to be the mutated sequence, and if
+            mutating the PAM sites is impossible, the algorithm will take the second sequence to design the CRISPR
+            plan onto.</li><br>
+
+         <li class="card-text"><b>How far away from the DSB point would the algorithm try to insert mutation
+            (or: what range is taken to be the mutation zone)?</b><br>
+            The mutation zone is defined to be ranging from the minimum between the lowest point mutation introduced
+            to the strand among the point mutations that change to amino acid and mutate the reattachment section
+            (PAM, crRNA) and DSB-20, and to DSB-1.</li><br>
+
+         <li class="card-text"><b>What is the numbering scheme the indices are represented by?</b><br>
+            The results incorporate zero-based numbering; the initial element of a sequence is assigned the index
+            0.</li><br>
+
+         <li class="card-text"><b>What protocol does the automated CRISPR planner follow?</b><br>
+            Our algorithm is based on steps and the scheme described in this paper:<br>
+            Paix A, Folkmann A, Seydoux G. Precision genome editing using CRISPR-Cas9 and linear repair templates
+            in C. elegans. Methods. 2017;121-122:86-93. doi:10.1016/j.ymeth.2017.03.023<br>
+            Our lab has made a few alterations in the CRISPR protocol, you can view our revised protocol here:<br>
+            <a href="{{url_for('protocol')}}">CRISPR protocol alterations and tips</a></li><br>
+    </ol>
+      </div>
+    </div>
+
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+  </body>
+</html>

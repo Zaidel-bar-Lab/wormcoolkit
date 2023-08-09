@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+      <style>
+          .card {
+              margin: 10px;
+          }
+          form {
+              margin:0 !important;
+          }
+          .loader {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+           }
+           @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+           }
+      </style>
+      <script type="text/javascript">
+        function toggle_visibility(id1,id2) {
+            let e1 = document.getElementById(id1);
+            let e2 = document.getElementById(id2);
+            if(e1.style.display === 'block'){
+                e1.style.display = 'none';
+                e2.style.display = 'block';
+            }
+            else{
+                e1.style.display = 'block';
+                e2.style.display = 'none';
+            }
+          }
+       </script>
+    <title>The Ortholog Finder</title>
+  </head>
+<body>
+    {% extends "template.html" %}
+    {% block content %}
+    <div class="loader" id="myloader" style="display: none;"></div>
+    <div id="mycontainer" style="display: block;">
+
+    <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Find your Human-Caenorhabditis elegans orthologous genes and check your conserved amino acids</h2>
+            <p class="card-text"> The Ortholog Finder project is consisted of three sub services:</p>
+            <p class="card-text"><b> 1. Find the Caenorhabditis elegans orthologs:</b></p>
+            <p class="card-text">A service that aims to find the best Caenorhabditis elegans orthologs for your human genes.</p>
+            <p class="card-text"><b> 2. Find the Human orthologs:</b></p>
+            <p class="card-text">A service that aims to find the best Human orthologs for your Caenorhabditis elegans genes.</p>
+            <p class="card-text"><b> 3.  The Amino Acid Conservation Tool</b></p>
+            <p class="card-text">A service that aims to provide you with information regarding a specific amino acid you’d like to CRISPR.</p>
+      </div>
+    </div>
+
+
+   <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Find The Caenorhabditis elegans Orthologs</h2>
+    <p> In order to use the service, please insert your human genes names (separated by commas if there are more than
+        one), for example: TCP1,DDR1,SRSF5</p>
+    <div class="gap-10"></div>
+    <form action="/c_elegans_orthologs" method="POST">
+
+          <div class="form-group row">
+            <label for="text" class="col-sm-3 col-form-label"> Your human genes: </label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control"  name="text" id="text" value="">
+            </div>
+        </div>
+
+
+        <br> Input type: <select class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="type_select">
+            <option value=True>Genes Names</option>
+            <option value=>Genes Ids</option>
+        </select>
+        <br/>
+        <br/>
+        Minimum number of sources:
+        <select class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="sources_bar">
+            <option value=0>0</option>
+            <option value=1>1</option>
+            <option selected value=2>2 (Default)</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+            <option value=6>6</option>
+        </select>
+        <br/>
+        <br/>
+
+
+
+         <div class="form-group row">
+            <label for="length_ratio_from_2" class="col-sm-2 col-form-label"> Length ratio range: </label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" list="worm_down_bar" id="length_ratio_from_2"  name="length_ratio_from" value="0.5">
+                 <datalist id="worm_down_bar">
+                </datalist>
+            </div>
+
+             <label for="length_ratio_to_2" class="col-sm-1 col-form-label"> To: </label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" list="worm_top_bar" name="length_ratio_to" id="length_ratio_to_2" value="2">
+                  <datalist id="worm_top_bar">
+                    </datalist>
+            </div>
+        </div>
+
+
+         <input class="btn btn-primary"  type="submit" value="Submit" onclick="toggle_visibility('myloader','mycontainer');">
+    </form>
+      </div>
+   </div>
+    <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Find The Human Orthologs</h2>
+    <p> In order to use the service, please insert your Caenorhabditis elegans names (separated by commas if there are more
+        than one), for example: cct-1,cap-1,arx-2</p>
+    <div class="gap-10"></div>
+    <form action="/human_orthologs" method="POST">
+
+        <div class="form-group row">
+            <label for="text" class="col-sm-3 col-form-label"> Your C.elegans genes: </label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control"  name="text" id="text" value="">
+            </div>
+        </div>
+
+        <br>
+        Input type: <select class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="type_select">
+            <option value=True>Genes Names</option>
+            <option value=>Genes Ids</option>
+        </select>
+           <br>
+
+        <br> Minimum number of sources:
+        <select  class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="sources_bar">
+            <option value=0>0</option>
+            <option value=1>1</option>
+            <option selected value=2>2 (Default)</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+            <option value=6>6</option>
+        </select>
+        <br/>
+        <br/>
+
+
+         <div class="form-group row">
+            <label for="length_ratio_from" class="col-sm-2 col-form-label"> Length ratio range: </label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" list="human_down_bar" id="length_ratio_from"  name="length_ratio_from" value="0.5">
+                 <datalist id="human_down_bar">
+                </datalist>
+            </div>
+
+             <label for="length_ratio_to" class="col-sm-1 col-form-label"> To: </label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" list="human_top_bar" name="length_ratio_to" id="length_ratio_to" value="2">
+                  <datalist id="human_top_bar">
+                    </datalist>
+            </div>
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Submit" onclick="toggle_visibility('myloader','mycontainer');">
+    </form>
+
+      </div>
+    </div>
+        <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">The Amino Acid Conservation Tool</h2>
+
+    <p> In order to use the service, please insert your genes names and amino acids according to the format below:</p>
+    <p>GeneName1:[aa1,aa2],GeneName2:[aa1,aa2,aa3], for example: FBXO11:[Arg138,Ser840],KDELR3:[Arg169,Val199]</p>
+    <div class="gap-10"></div>
+    <form action="/variants" method="POST">
+
+         <div class="form-group row">
+            <label for="text" class="col-sm-4 col-form-label"> Your human genes and their amino acids: </label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control"  name="text" id="text" value="">
+            </div>
+        </div>
+
+        <br> Minimum number of sources:
+        <select class="custom-select" style="width:30%;margin-right: 1%;margin-left: 1%" name="sources_bar">
+            <option value=0>0</option>
+            <option value=1>1</option>
+            <option selected value=2>2 (Default)</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+            <option value=6>6</option>
+        </select>
+        <br/>
+        <br/>
+
+
+          <div class="form-group row">
+            <label for="length_ratio_from_1"  class="col-sm-2 col-form-label"> Length ratio range: </label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="length_ratio_from_1"  list="conserved_down_bar" name="length_ratio_from" value="0.5">
+                 <datalist id="conserved_down_bar">
+                </datalist>
+            </div>
+
+             <label for="length_ratio_to_1" class="col-sm-1 col-form-label"> To: </label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control"  list="conserved_top_bar" name="length_ratio_to" id="length_ratio_to_1" value="2">
+                  <datalist id="conserved_top_bar">
+                    </datalist>
+            </div>
+        </div>
+
+
+
+         <input class="btn btn-primary" type="submit" value="Submit" onclick="toggle_visibility('myloader','mycontainer');">
+    </form>
+
+
+    <div class="gap-30"></div>
+
+    <div class="alert alert-warning" role="alert">
+         The process can take up to several minutes, please be patient
+    </div>
+
+      </div>
+        </div>
+
+    </div>
+
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+</body>
+</html>

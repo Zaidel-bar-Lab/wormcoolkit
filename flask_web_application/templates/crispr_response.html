@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-left: 40px;
+        }
+        .card {
+            margin: 10px;
+        }
+        th, td {
+            padding: 5px;
+        }
+        th {
+            text-align: left;
+        }
+        .highlight {color: yellow;}
+
+      </style>
+
+    <meta charset="utf-8">
+    <title>Your Results Are Here!</title>
+  </head>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+    <div class="card" >
+      <div class="card-body">
+        <h2 class="card-title">Your CRISPR Results Are Here! </h2>
+        <p><u>Restriction enzymes relevant for your query:</u></p>
+        {% if result.enzymes %}
+            {% for r_enzyme in result.enzymes %}
+                <li class="special ">{{ r_enzyme }}</li>
+            {% endfor %}
+        {% else %}
+            <p>All known enzymes</p>
+        {% endif %}
+
+
+        <br>
+        <p><u>Gene name:</u> {{result.query_data[0]}}</p>
+        <p><u>Query:</u> from {{result.query_data[1]}} in {{result.query_data[2]}} to {{result.query_data[3]}}</p><br>
+        <p>For crRNA: {{result.crRNA[0]}} in index: {{result.crRNA[1].start}}-{{result.crRNA[1].end}}
+            from strand: {{result.crRNA_strand}}</p><br>
+
+
+        <p>Gene's transcript was extracted from: <a href="{{ result.request_url }}" target="_blank">Gene's WormBase transcript</a> </p>
+        <p>For ssODND on strand: {{ ssodn_strand }} </p><br>
+
+        <p>Restriction sites who have been inserted into the sequence using no additional mutations (other than codon
+            mutations and prevent-reattachment mutations), if found:</p>
+        <ul>
+            {% for restriction_mutation in result.no_extra_inserted_mutations %}
+                <li> Codon mutation(s) to change amino acid:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.codon_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Mutations to prevent reattachment:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.reattachment_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Restriction site mutations:<br>
+                    Restriction site in indexes {{ restriction_mutation.restriction_site.index.start }}-
+                    {{ restriction_mutation.restriction_site.index.end }}
+                    with enzyme {{ restriction_mutation.restriction_site.enzyme.name }},
+                    site: {{ restriction_mutation.restriction_site.enzyme.site }}<br>
+                    <br>
+                    Repair template on {{ ssodn_strand }} strand:
+                    <br> {{ restriction_mutation.repair_template[0] }}{{ restriction_mutation.repair_template[1] }}{{ restriction_mutation.repair_template[2] }}
+                    <br>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <p>Restriction sites who have been inserted into the sequence using additional mutations (other than codon
+            mutations and prevent-reattachment mutations), if found:</p>
+        <ul>
+            {% for restriction_mutation in result.inserted_mutations %}
+                <li> Codon mutation(s) to change amino acid:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.codon_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Mutations to prevent reattachment:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.reattachment_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Restriction site mutations:<br>
+                    Restriction site in indexes {{ restriction_mutation.restriction_site.index.start }}-
+                    {{ restriction_mutation.restriction_site.index.end }}
+                    with enzyme {{ restriction_mutation.restriction_site.enzyme.name }},
+                    site: {{ restriction_mutation.restriction_site.enzyme.site }}
+                    <br>with mutations:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.mutated_sites %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Repair template on {{ ssodn_strand }} strand:
+                    <br> {{ restriction_mutation.repair_template[0] }}{{ restriction_mutation.repair_template[1] }}{{ restriction_mutation.repair_template[2] }}
+                    <br>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <p>Restriction sites who have been removed from the sequence using no additional mutations (other than codon
+            mutations and prevent-reattachment mutations), if found:</p>
+        <ul>
+            {% for restriction_mutation in result.no_extra_removed_mutations %}
+                <li> Codon mutation(s) to change amino acid:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.codon_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Mutations to prevent reattachment:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.reattachment_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Restriction site mutations:<br>
+                    Restriction site in indexes {{ restriction_mutation.restriction_site.index.start }}-
+                    {{ restriction_mutation.restriction_site.index.end }}
+                    with enzyme {{ restriction_mutation.restriction_site.enzyme.name }},
+                    site: {{ restriction_mutation.restriction_site.enzyme.site }}<br>
+                    <br>
+                    Repair template on {{ ssodn_strand }} strand:
+                    <br> {{ restriction_mutation.repair_template[0] }}{{ restriction_mutation.repair_template[1] }}{{ restriction_mutation.repair_template[2] }}
+                    <br>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <p>Restriction sites who have been removed from the sequence using additional mutations (other than codon
+            mutations and prevent-reattachment mutations), if found:</p>
+        <ul>
+            {% for restriction_mutation in result.removed_mutations %}
+                <li> Codon mutation(s) to change amino acid:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.codon_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Mutations to prevent reattachment:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.reattachment_mutations %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Restriction site mutations:<br>
+                    Restriction site in indexes {{ restriction_mutation.restriction_site.index.start }}-
+                    {{ restriction_mutation.restriction_site.index.end }}
+                    with enzyme {{ restriction_mutation.restriction_site.enzyme.name }},
+                    site: {{ restriction_mutation.restriction_site.enzyme.site }}
+                    <br>with mutations:
+                    <ul>
+                        {% for point_mutation in restriction_mutation.mutated_sites %}
+                        <li>
+                            {{ point_mutation.index }}: {{ point_mutation.old_nucleotide }} -> {{ point_mutation.new_nucleotide }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    Repair template on {{ ssodn_strand }} strand:
+                    <br> {{ restriction_mutation.repair_template[0] }}{{ restriction_mutation.repair_template[1] }}{{ restriction_mutation.repair_template[2] }}
+                    <br>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <p>* index origin = 0 (zero-based numbering)</p>
+      </div>
+    </div>
+    <div class="gap-80"></div>
+    <footer>
+        <p>&copy; All rights reserved to <a href="https://www.zaidelbarlab.com/">Ronen Zaidel Bar's lab</a>.</p>
+        <p>Developed by Liran Avda & Sapir Shemesh of Ronen Zaidel Bar's lab.</p>
+    </footer>
+    {% endblock %}
+  </body>
+</html>
